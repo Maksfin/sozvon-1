@@ -5,6 +5,18 @@ const config = {
     output: {
         filename: 'bundle.js'
     },
+    devtool: 'source-map',
+    module: {
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+              loader: 'babel-loader'
+            }
+          }
+        ]
+    },
     plugins: [
         new UglifyJSPlugin({
             sourceMap: true

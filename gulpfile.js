@@ -1,9 +1,12 @@
 const gulp = require('gulp');
 const pug = require('gulp-pug');
+const plumber = require('gulp-plumber');
+const eslint = require('gulp-eslint');
 
 const sass = require('gulp-sass');
 const rename = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
+const stylelint = require('gulp-stylelint');
 
 const del = require('del');
 
@@ -43,6 +46,12 @@ function templates() {
 // scss
 function styles() {
     return gulp.src('./src/styles/app.scss')
+        .pipe(plumber())
+        .pipe(stylelint({
+            reporters: [
+              {formatter: 'string', console: true}
+            ]
+        }))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}))
         .pipe(sourcemaps.write())
@@ -58,6 +67,9 @@ function clean() {
 // webpack
 function scripts() {
     return gulp.src('src/scripts/app.js')
+        .pipe(plumber())
+        .pipe(eslint({fix: true}))
+        .pipe(eslint.format())
         .pipe(gulpWebpack(webpackConfig, webpack)) 
         .pipe(gulp.dest(paths.scripts.dest));
 }
